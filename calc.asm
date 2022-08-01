@@ -13,6 +13,10 @@ section .text
 _start:
 	call	read
 
+	mov	bl, [input]
+	cmp	bl, 113			; exit if input buffer begins with 'q'
+	je	exit
+
 	mov	rsi, input
 	mov	rdx, count
 	call	write

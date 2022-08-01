@@ -2,7 +2,7 @@
 ; https://chromium.googlesource.com/chromiumos/docs/+/HEAD/constants/syscalls.md
 ; nasm -f elf64 calc.asm && ld calc.o -o calc.out
 
-%define count r12
+%define count	r12
 
 section	.bss
 input	DB 70 DUP(?)
@@ -12,9 +12,10 @@ section .text
 
 _start:
 	call	read
-
 	mov	bl, [input]
-	cmp	bl, 113			; exit if input buffer begins with 'q'
+
+	; exit if input begins with 'q'
+	cmp	bl, 113
 	je	exit
 
 	mov	rsi, input

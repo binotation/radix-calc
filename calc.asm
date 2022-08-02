@@ -60,12 +60,27 @@ construct_binary_loop:			; construct binary representation
 	mov	[halves + 8 * r8], r10	; halves[i + 1] = halves[i] / 2
 
 	test	r10, r10		; if halves[i] / 2 == 0, end loop
-	jz	print
+	jz	reverse_rem_init
 	cmp	r8, 65
 	jb	construct_binary_loop
 
-print:
+reverse_rem_init:
 	mov	byte [rem + r8], 0	; terminate remainder string
+	dec	r8			; r8 = right index = i - 1
+	xor	r13, r13		; r13 = left index = 0
+
+reverse_rem_loop:			; reverse rem in-place excluding null terminator
+	mov	cl, byte [rem + r13]	; temp left value
+	mov	r11b, byte [rem + r8]	; temp right value
+	mov	byte [rem + r13], r11b
+	mov	byte [rem + r8], cl
+
+	inc	r13
+	dec	r8
+	cmp	r13, r8
+	jb	reverse_rem_loop
+
+print:
 	; printf(fmtbin, rem)
 	xor	arg0, arg0
 	mov	arg1, fmtbin

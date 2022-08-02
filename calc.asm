@@ -10,7 +10,7 @@
 
 section	.bss
 input	db 67 DUP(?)
-val	dq ?
+halves	dq 65 DUP(?)
 
 global	main
 extern	printf
@@ -40,24 +40,24 @@ main:
 	xor	arg2, arg2
 	xor	arg3, arg3
 	call	strtol
-	mov	[val], arg0
+	mov	[halves], arg0
 
-	; printf(fmtoct, val)
-	mov	arg2, arg0
-	mov	arg1, fmtoct
+	; printf(fmtoct, *halves)
 	xor	arg0, arg0
+	mov	arg1, fmtoct
+	mov	arg2, [halves]
 	call	printf
 
-	; printf(fmtdec, val)
+	; printf(fmtdec, *halves)
 	xor	arg0, arg0
 	mov	arg1, fmtdec
-	mov	arg2, [val]
+	mov	arg2, [halves]
 	call	printf
 
-	; printf(fmthex, val)
+	; printf(fmthex, *halves)
 	xor	arg0, arg0
 	mov	arg1, fmthex
-	mov	arg2, [val]
+	mov	arg2, [halves]
 	call	printf
 
 	jmp	main			; loop

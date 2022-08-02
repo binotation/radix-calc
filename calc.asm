@@ -9,7 +9,7 @@
 %define	in0	bl
 
 section	.bss
-input	db 70 DUP(?)
+input	db 67 DUP(?)
 val	dq ?
 
 global	main
@@ -22,11 +22,11 @@ fmtdec	db "dec: %d", 10, 0
 fmthex	db "hex: 0x%x", 10, 0
 
 main:
-	; sys_read(0, input, 70)
+	; sys_read(0, input, 67)
 	xor	arg0, arg0		; syscall #0
 	xor	arg1, arg1		; stdin fd = 0
 	mov	arg2, input
-	mov	arg3, 70		; read <=70 bytes
+	mov	arg3, 67		; read <=67 bytes
 	syscall
 	mov	in0, [input]		; load first input byte
 

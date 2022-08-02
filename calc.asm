@@ -10,13 +10,16 @@
 
 section	.bss
 input	db 70 DUP(?)
+val	dq ?
 
 global	main
 extern	printf
 extern	strtol
 
 section	.text
-fmtdec	db "%d", 10, 0
+fmtoct	db "oct: 0%o", 10, 0
+fmtdec	db "dec: %d", 10, 0
+fmthex	db "hex: 0x%x", 10, 0
 
 main:
 	; sys_read(0, input, 70)
@@ -37,11 +40,24 @@ main:
 	xor	arg2, arg2
 	xor	arg3, arg3
 	call	strtol
+	mov	[val], arg0
 
-	; printf
-	mov	arg1, fmtdec
+	; printf(fmtoct, val)
 	mov	arg2, arg0
+	mov	arg1, fmtoct
 	xor	arg0, arg0
+	call	printf
+
+	; printf(fmtdec, val)
+	xor	arg0, arg0
+	mov	arg1, fmtdec
+	mov	arg2, [val]
+	call	printf
+
+	; printf(fmthex, val)
+	xor	arg0, arg0
+	mov	arg1, fmthex
+	mov	arg2, [val]
 	call	printf
 
 	jmp	main			; loop

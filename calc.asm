@@ -65,8 +65,3 @@ main:
 exit:					; return from main
 	xor	arg0, arg0		; zero out exit code
 	ret
-
-isposint:				; check in0 is a positive int - jbe if so
-	sub	in0, 49
-	cmp	in0, 8
-	ret

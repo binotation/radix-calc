@@ -1,5 +1,3 @@
-; syscall table:
-; https://chromium.googlesource.com/chromiumos/docs/+/HEAD/constants/syscalls.md
 ; nasm -f elf64 calc.asm && gcc calc.o -o calc.out
 
 %define	arg0	rax
@@ -9,20 +7,20 @@
 %define	in0	bl
 
 section	.bss
-input:	resb 67				; length("0b") + 64 + length("\0")
-i:	resq 1
-halves:	resq 65				; n, n/2, n/4, ..., n/2^64
-rem:	resb 65				; n % 2, n/2 % 2, ..., n/2^64 % 2, "\0"
+	input:	resb 67			; length("0b") + 64 + length("\0")
+	i:	resq 1
+	halves:	resq 65			; n, n/2, n/4, ..., n/2^64
+	rem:	resb 65			; n % 2, n/2 % 2, ..., n/2^64 % 2, "\0"
 
 global	main
 extern	printf
 extern	strtol
 
 section	.text
-fmtoct	db "oct: 0%o", 10, 0
-fmtdec	db "dec: %d", 10, 0
-fmthex	db "hex: 0x%x", 10, 0
-fmtbin	db "bin: 0b%s", 10, 0
+	fmtoct	db "oct: 0%o", 10, 0
+	fmtdec	db "dec: %d", 10, 0
+	fmthex	db "hex: 0x%x", 10, 0
+	fmtbin	db "bin: 0b%s", 10, 0
 
 main:
 	; sys_read(0, input, 67)
@@ -50,24 +48,24 @@ construct_binary_loop:			; construct binary representation
 	mov	r8, [i]			; r8 = i
 	mov	r9, [halves + 8 * r8]	; r9 = halves[i]
 	mov	r10, r9
-	shr	r10, 1			; r10 = halves[i] / 2
+	shr	r10, 1			; r10 = halves[i] // 2
 	mov	r11, r10
-	shl	r11, 1			; r11 = r10 * 2
-	mov	r12, r9			; r12 = halves[i]
-	sub	r12, r11		; r12 = halves[i] - r10 * 2 = remainder
-	add	r12, 48
-	mov	[rem + r8], r12		; store remainder
-	inc	r8
+	shl	r11, 1			; r11 = halves[i] // 2 * 2
+	mov	r12, r9
+	sub	r12, r11		; r12 = halves[i] - halves[i] // 2 * 2 = remainder
+	add	r12, 48			; convert to ascii
+	mov	[rem + r8], r12		; store remainder ascii
+	inc	r8			; r8++
 	mov	[i], r8			; i++
 	mov	[halves + 8 * r8], r10	; halves[i + 1] = halves[i] / 2
 
-	test	r10, r10
+	test	r10, r10		; if halves[i] / 2 == 0, end loop
 	jz	print
 	cmp	r8, 65
 	jb	construct_binary_loop
 
 print:
-	mov	byte [rem + r8], 0	; terminate rem string
+	mov	byte [rem + r8], 0	; terminate remainder string
 	; printf(fmtbin, rem)
 	xor	arg0, arg0
 	mov	arg1, fmtbin

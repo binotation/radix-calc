@@ -37,7 +37,7 @@ main:
 	je	exit
 
 	; if input is binary, parse
-	cmp	rcx, 3
+	cmp	rcx, 4
 	jb	parse_not_binary
 	cmp	bh, 98			; skip if second byte is not 'b'
 	jne	parse_not_binary

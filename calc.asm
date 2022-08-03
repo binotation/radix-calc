@@ -28,6 +28,7 @@ main:
 	mov	arg2, input
 	mov	arg3, 35		; read <=35 bytes
 	syscall
+	mov	rcx, arg0		; store # bytes read
 	mov	bl, [input]		; load first and second input bytes
 	mov	bh, [input + 1]
 
@@ -36,6 +37,8 @@ main:
 	je	exit
 
 	; if input is binary, parse
+	cmp	rcx, 3
+	jb	parse_not_binary
 	cmp	bh, 98			; skip if second byte is not 'b'
 	jne	parse_not_binary
 	cmp	bl, 48			; skip if first byte is not '0'
@@ -83,6 +86,8 @@ construct_binary_loop:			; construct binary representation
 reverse_rem_init:
 	mov	byte [rem + r8], 0	; terminate remainder string
 	dec	r8			; r8 = right index = i - 1
+	test	r8, r8			; skip if only 1 bit
+	jz	print
 	xor	r13, r13		; r13 = left index = 0
 
 reverse_rem_loop:			; reverse rem in-place excluding null terminator

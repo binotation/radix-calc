@@ -6,10 +6,10 @@
 %define	arg3	rdx
 
 section	.bss
-	input:	resb 67			; length("0b") + 64 + length("\0")
+	input:	resb 35			; length("0b") + 32 + length("\0")
 	i:	resq 1
-	halves:	resq 65			; n, n/2, n/4, ..., n/2^64
-	rem:	resb 65			; n % 2, n/2 % 2, ..., n/2^64 % 2, "\0"
+	halves:	resq 33			; n, n/2, n/4, ..., n/2^32
+	rem:	resb 33			; n % 2, n/2 % 2, ..., n/2^32 % 2, "\0"
 
 global	main
 extern	printf
@@ -22,11 +22,11 @@ section	.text
 	fmtbin	db "bin: 0b%s", 10, 0
 
 main:
-	; sys_read(0, input, 67)
+	; sys_read(0, input, 35)
 	xor	arg0, arg0		; syscall #0
 	xor	arg1, arg1		; stdin fd = 0
 	mov	arg2, input
-	mov	arg3, 67		; read <=67 bytes
+	mov	arg3, 35		; read <=35 bytes
 	syscall
 	mov	bl, [input]		; load first and second input bytes
 	mov	bh, [input + 1]
@@ -78,7 +78,7 @@ construct_binary_loop:			; construct binary representation
 
 	test	r10, r10		; if halves[i] / 2 == 0, end loop
 	jz	reverse_rem_init
-	cmp	r8, 65
+	cmp	r8, 33
 	jb	construct_binary_loop
 
 reverse_rem_init:

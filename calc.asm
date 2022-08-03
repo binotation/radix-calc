@@ -4,7 +4,6 @@
 %define	arg1	rdi
 %define	arg2	rsi
 %define	arg3	rdx
-%define	in0	bl
 
 section	.bss
 	input:	resb 67			; length("0b") + 64 + length("\0")
@@ -29,20 +28,38 @@ main:
 	mov	arg2, input
 	mov	arg3, 67		; read <=67 bytes
 	syscall
-	mov	in0, [input]		; load first input byte
+	mov	bl, [input]		; load first and second input bytes
+	mov	bh, [input + 1]
 
 	; exit if input begins with 'q'
-	cmp	in0, 113
+	cmp	bl, 113
 	je	exit
 
+	; if input is binary, parse
+	cmp	bh, 98			; skip if second byte is not 'b'
+	jne	parse_not_binary
+	cmp	bl, 48			; skip if first byte is not '0'
+	jne	parse_not_binary
+	xor	arg0, arg0		; strtol(input + 2, NULL, 2)
+	mov	arg1, input + 2
+	xor	arg2, arg2
+	mov	arg3, 2
+	call	strtol
+	mov	[halves], arg0		; store result
+
+	mov	qword [i], 0		; reset loop variable
+	jmp	construct_binary_loop
+
+parse_not_binary:
 	; strtol(input, NULL, 0)
 	xor	arg0, arg0
 	mov	arg1, input
 	xor	arg2, arg2
 	xor	arg3, arg3
 	call	strtol
-	mov	[halves], arg0
-	mov	qword [i], 0
+	mov	[halves], arg0		; store result
+
+	mov	qword [i], 0		; reset loop variable
 
 construct_binary_loop:			; construct binary representation
 	mov	r8, [i]			; r8 = i

@@ -18,7 +18,7 @@ extern	strtol
 section	.text
 	fmtoct	db "oct: 0%o", 10, 0
 	fmtdec	db "dec: %d", 10, 0
-	fmthex	db "hex: 0x%x", 10, 0
+	fmthex	db "hex: 0x%x", 10, 10, 0
 	fmtbin	db "bin: 0b%s", 10, 0
 
 main:

@@ -10,7 +10,7 @@ nasm -f elf64 calc.asm && gcc calc.o -o calc.out
 ./calc.out
 ```
 
-Enter a number of radix 2, 8, 10 or 16, i.e. binary, octal, decimal or hexdecimal. The acceptable range is [-2^31, 2^31-1], i.e. 32-bit 2's-complement integers.
+Enter a number of radix 2, 8, 10 or 16, i.e. binary, octal, decimal or hexdecimal. The acceptable range is [0, 2^32-1], i.e. 32-bit unsigned integers.
 
 Format for each radix:
 - binary: 0bddd...

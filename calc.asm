@@ -8,8 +8,8 @@
 section	.bss
 	input:	resb 35			; length("0b") + 32 + length("\0")
 	i:	resq 1
-	halves:	resq 33			; n, n/2, n/4, ..., n/2^32
-	rem:	resb 33			; n % 2, n/2 % 2, ..., n/2^32 % 2, "\0"
+	halves:	resq 33			; max 32 divisions + original value
+	rem:	resb 33			; max 32 remainders + null byte
 
 global	main
 extern	printf

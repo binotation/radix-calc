@@ -78,8 +78,7 @@ construct_binary_loop:			; construct binary representation
 
 	test	r10, r10		; if halves[i] / 2 == 0, end loop
 	jz	reverse_rem_init
-	cmp	r8, 33
-	jb	construct_binary_loop
+	jmp	construct_binary_loop
 
 reverse_rem_init:
 	mov	byte [rem + r8], 0	; terminate remainder string

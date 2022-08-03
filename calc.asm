@@ -13,11 +13,11 @@ section	.bss
 
 global	main
 extern	printf
-extern	strtol
+extern	strtoul
 
 section	.text
 	fmtoct	db "oct: 0%o", 10, 0
-	fmtdec	db "dec: %d", 10, 0
+	fmtdec	db "dec: %lu", 10, 0
 	fmthex	db "hex: 0x%x", 10, 10, 0
 	fmtbin	db "bin: 0b%s", 10, 0
 
@@ -43,23 +43,23 @@ main:
 	jne	parse_not_binary
 	cmp	bl, 48			; skip if first byte is not '0'
 	jne	parse_not_binary
-	xor	arg0, arg0		; strtol(input + 2, NULL, 2)
+	xor	arg0, arg0		; strtoul(input + 2, NULL, 2)
 	mov	arg1, input + 2
 	xor	arg2, arg2
 	mov	arg3, 2
-	call	strtol
+	call	strtoul
 	mov	[halves], arg0		; store result
 
 	mov	qword [i], 0		; reset loop variable
 	jmp	construct_binary_loop
 
 parse_not_binary:
-	; strtol(input, NULL, 0)
+	; strtoul(input, NULL, 0)
 	xor	arg0, arg0
 	mov	arg1, input
 	xor	arg2, arg2
 	xor	arg3, arg3
-	call	strtol
+	call	strtoul
 	mov	[halves], arg0		; store result
 
 	mov	qword [i], 0		; reset loop variable
